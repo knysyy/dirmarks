@@ -50,7 +50,6 @@ const ZSH_ALIAS: &str = r#"
 alias ba='bookmark-directory add'
 alias bl='bookmark-directory list'
 alias bd='bookmark-directory delete'
-alias bm='bookmark-directory migrate'
 alias br='bookmark-directory rename'
 "#;
 
