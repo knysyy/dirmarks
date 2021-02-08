@@ -1,10 +1,11 @@
 use structopt::{clap, StructOpt};
 
-use crate::CliResult;
-use crate::database::connection::establish_connection;
-use crate::database::repository;
-use crate::error::CommandError;
-use crate::result::CommandResult;
+use crate::{
+    database::{connection::establish_connection, repository},
+    error::CommandError,
+    result::CommandResult,
+    types::CliResult,
+};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "del", about = "delete directory bookmrak")]
@@ -21,13 +22,9 @@ impl Delete {
             Ok(bookmark) => {
                 repository::delete_bookmark(&conn, &self.key)?;
                 Ok(CommandResult::Deleted(bookmark.key, bookmark.path))
-            }
-            Err(diesel::NotFound) => {
-                Err(CommandError::NotFound)
-            }
-            Err(err) => {
-                Err(CommandError::Database(err))
-            }
+            },
+            Err(diesel::NotFound) => Err(CommandError::NotFound),
+            Err(err) => Err(CommandError::Database(err)),
         }
     }
 }

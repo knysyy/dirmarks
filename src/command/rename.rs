@@ -1,10 +1,11 @@
 use structopt::{clap, StructOpt};
 
-use crate::database::connection::establish_connection;
-use crate::database::repository;
-use crate::types::CliResult;
-use crate::error::CommandError;
-use crate::result::CommandResult;
+use crate::{
+    database::{connection::establish_connection, repository},
+    error::CommandError,
+    result::CommandResult,
+    types::CliResult,
+};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "rename", about = "rename directory bookmark key")]
@@ -22,15 +23,18 @@ impl Rename {
         let conn = establish_connection()?;
         match repository::get_bookmark(&conn, &self.old_key) {
             Ok(_) => {
-                repository::rename_bookmark(&conn, &self.old_key, &self.new_key)?;
-                Ok(CommandResult::Renamed(self.old_key.to_string(), self.new_key.to_string()))
-            }
-            Err(diesel::NotFound) => {
-                Err(CommandError::NotFound)
-            }
-            Err(err) => {
-                Err(CommandError::Database(err))
-            }
+                repository::rename_bookmark(
+                    &conn,
+                    &self.old_key,
+                    &self.new_key,
+                )?;
+                Ok(CommandResult::Renamed(
+                    self.old_key.to_string(),
+                    self.new_key.to_string(),
+                ))
+            },
+            Err(diesel::NotFound) => Err(CommandError::NotFound),
+            Err(err) => Err(CommandError::Database(err)),
         }
     }
 }

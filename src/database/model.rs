@@ -1,4 +1,5 @@
-use diesel::{Queryable, Insertable};
+use diesel::{Insertable, Queryable};
+
 use crate::schema::*;
 
 #[derive(Debug, Queryable)]

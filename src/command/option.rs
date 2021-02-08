@@ -1,8 +1,7 @@
 use colored::*;
 use structopt::{clap, StructOpt};
 
-use crate::error::CommandError;
-use crate::result::CommandResult;
+use crate::{error::CommandError, result::CommandResult};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "bookmark-directory")]
@@ -36,27 +35,28 @@ impl Opt {
         let success = "Success".bold().cyan();
         let error = "Error".bold().red();
         match result {
-            Ok(command_result) => {
-                match command_result {
-                    CommandResult::Added(key, path) => {
-                        println!("{} : Added {} -> {}", success, key, path);
-                    }
-                    CommandResult::Deleted(key, path) => {
-                        println!("{} : Deleted {} -> {}", success, key, path);
-                    }
-                    CommandResult::Renamed(old_key, new_key) => {
-                        println!("{} : Renamed {} -> {}", success, old_key, new_key);
-                    }
-                    CommandResult::Jump(path) => {
-                        println!("jump : {}", path);
-                    }
-                    CommandResult::Migrated(path) => {
-                        println!("{} : Migrated {}", success, path);
-                    }
-                    _ => {}
-                }
-            }
-            Err(err) => println!("{} : {}", error, err)
+            Ok(command_result) => match command_result {
+                CommandResult::Added(key, path) => {
+                    println!("{} : Added {} -> {}", success, key, path);
+                },
+                CommandResult::Deleted(key, path) => {
+                    println!("{} : Deleted {} -> {}", success, key, path);
+                },
+                CommandResult::Renamed(old_key, new_key) => {
+                    println!(
+                        "{} : Renamed {} -> {}",
+                        success, old_key, new_key
+                    );
+                },
+                CommandResult::Jump(path) => {
+                    println!("jump : {}", path);
+                },
+                CommandResult::Migrated(path) => {
+                    println!("{} : Migrated {}", success, path);
+                },
+                _ => {},
+            },
+            Err(err) => println!("{} : {}", error, err),
         }
     }
 }

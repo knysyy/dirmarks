@@ -1,8 +1,6 @@
 use std::env;
 
-use diesel::prelude::*;
-use diesel::sqlite::SqliteConnection;
-
+use diesel::{prelude::*, sqlite::SqliteConnection};
 use dotenv::dotenv;
 
 use crate::error::CommandError;

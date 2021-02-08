@@ -1,10 +1,8 @@
-use std::io;
-use std::io::Write;
+use std::{io, io::Write};
 
 use structopt::{clap, StructOpt};
 
-use crate::CliResult;
-use crate::result::CommandResult;
+use crate::{result::CommandResult, types::CliResult};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "init", about = "bookmark directory init command")]

@@ -1,18 +1,12 @@
 # Bookmark-Directory
 
-## Install手順
-1. .zshrcに下記を追加する。
+## Installation
 ```
-export DATABASE_URL="$HOME/bd.db"
-eval "$(bookmark-directory init)"
+$ make install
 ```
 
-2. プロジェクトルートで以下を実行する。
+### Formatting
 ```
-cargo build --release
-```
-
-3. バイナリファイルを以下に配置する。
-```
-cp ./target/release/bookmark-directory ~/.cargo/bin
+$ rustup component add rustfmt --toolchain nightly
+$ make fmt
 ```

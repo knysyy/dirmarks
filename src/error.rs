@@ -1,5 +1,4 @@
-use std::{env, fmt, io};
-use std::fmt::Debug;
+use std::{env, fmt, fmt::Debug, io};
 
 use diesel::{result::Error, ConnectionError};
 
@@ -19,21 +18,47 @@ impl fmt::Display for CommandError {
         match *self {
             CommandError::NotFound => write!(f, "This key does not exist"),
             CommandError::AlreadyExist => write!(f, "This key already exist"),
-            CommandError::AlreadyFileExist => write!(f, "Already database file exist"),
+            CommandError::AlreadyFileExist => {
+                write!(f, "Already database file exist")
+            },
             CommandError::IoError(ref err) => fmt::Display::fmt(&err, f),
             CommandError::VarError(ref err) => fmt::Display::fmt(&err, f),
-            CommandError::Database(Error::InvalidCString(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::Database(Error::DatabaseError(_, ref err)) => err.fmt(f),
-            CommandError::Database(Error::NotFound) => write!(f, "Diesel Not Found"),
-            CommandError::Database(Error::QueryBuilderError(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::Database(Error::DeserializationError(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::Database(Error::SerializationError(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::Database(Error::RollbackTransaction) => write!(f, "Diesel RollbackTransaction"),
-            CommandError::Database(Error::AlreadyInTransaction) => write!(f, "Diesel AlreadyInTransaction"),
-            CommandError::ConnectionErr(ConnectionError::InvalidCString(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::ConnectionErr(ConnectionError::BadConnection(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::ConnectionErr(ConnectionError::CouldntSetupConfiguration(ref err)) => fmt::Display::fmt(&err, f),
-            CommandError::ConnectionErr(ConnectionError::InvalidConnectionUrl(ref err)) => fmt::Display::fmt(&err, f),
+            CommandError::Database(Error::InvalidCString(ref err)) => {
+                fmt::Display::fmt(&err, f)
+            },
+            CommandError::Database(Error::DatabaseError(_, ref err)) => {
+                err.fmt(f)
+            },
+            CommandError::Database(Error::NotFound) => {
+                write!(f, "Diesel Not Found")
+            },
+            CommandError::Database(Error::QueryBuilderError(ref err)) => {
+                fmt::Display::fmt(&err, f)
+            },
+            CommandError::Database(Error::DeserializationError(ref err)) => {
+                fmt::Display::fmt(&err, f)
+            },
+            CommandError::Database(Error::SerializationError(ref err)) => {
+                fmt::Display::fmt(&err, f)
+            },
+            CommandError::Database(Error::RollbackTransaction) => {
+                write!(f, "Diesel RollbackTransaction")
+            },
+            CommandError::Database(Error::AlreadyInTransaction) => {
+                write!(f, "Diesel AlreadyInTransaction")
+            },
+            CommandError::ConnectionErr(ConnectionError::InvalidCString(
+                ref err,
+            )) => fmt::Display::fmt(&err, f),
+            CommandError::ConnectionErr(ConnectionError::BadConnection(
+                ref err,
+            )) => fmt::Display::fmt(&err, f),
+            CommandError::ConnectionErr(
+                ConnectionError::CouldntSetupConfiguration(ref err),
+            ) => fmt::Display::fmt(&err, f),
+            CommandError::ConnectionErr(
+                ConnectionError::InvalidConnectionUrl(ref err),
+            ) => fmt::Display::fmt(&err, f),
             _ => write!(f, "Unknown Error"),
         }
     }
