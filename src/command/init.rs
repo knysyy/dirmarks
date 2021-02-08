@@ -7,7 +7,7 @@ use crate::CliResult;
 use crate::result::CommandResult;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "init", about = "bookmark directory init commnad")]
+#[structopt(name = "init", about = "bookmark directory init command")]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub struct Init {}
 

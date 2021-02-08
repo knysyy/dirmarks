@@ -15,13 +15,7 @@ use crate::result::CommandResult;
 #[derive(Debug, StructOpt)]
 #[structopt(name = "migration", about = "migration")]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
-pub struct Migrate {
-    #[structopt(short = "o", long = "old-key")]
-    old_key: String,
-
-    #[structopt(short = "n", long = "new-key")]
-    new_key: String,
-}
+pub struct Migrate {}
 
 impl Migrate {
     pub fn run(&self) -> CliResult {
