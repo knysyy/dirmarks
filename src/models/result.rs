@@ -10,7 +10,7 @@ pub enum CommandResult {
     Deleted(String, String),
     #[display(fmt = "{} : Renamed {} -> {}", "*SUCCESS_STRING", _0, _1)]
     Renamed(String, String),
-    #[display(fmt = "jump {}", _0)]
+    #[display(fmt = "jump : {}", _0)]
     Jump(String),
     #[display(fmt = "{} : Migrated {}", "*SUCCESS_STRING", _0)]
     Migrated(String),
