@@ -2,10 +2,10 @@ use std::{io, io::Write};
 
 use structopt::{clap, StructOpt};
 
-use crate::{result::CommandResult, types::CliResult};
+use crate::{models::result::CommandResult, types::CliResult};
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "init", about = "bookmark directory init command")]
+#[structopt(name = "init", about = "bookmark directory init commands")]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub struct Init {}
 

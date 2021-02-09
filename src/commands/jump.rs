@@ -1,10 +1,10 @@
 use structopt::{clap, StructOpt};
 
 use crate::{
-    database::{connection::establish_connection, repository::get_bookmark},
-    error::CommandError,
-    result::CommandResult,
+    errors::CommandError,
+    models::result::CommandResult,
     types::CliResult,
+    utils::{bookmark_service::get_bookmark, database::establish_connection},
 };
 
 #[derive(Debug, StructOpt)]
@@ -20,8 +20,8 @@ impl Jump {
         let conn = establish_connection()?;
         match get_bookmark(&conn, &self.key) {
             Ok(bookmark) => Ok(CommandResult::Jump(bookmark.path)),
-            Err(diesel::NotFound) => Err(CommandError::NotFound),
-            Err(err) => Err(CommandError::Database(err)),
+            Err(diesel::NotFound) => Err(CommandError::KeyNotFoundError(self.key.clone())),
+            Err(err) => Err(CommandError::DieselError(err)),
         }
     }
 }

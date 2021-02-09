@@ -1,18 +1,15 @@
+use anyhow::Result;
 use diesel::{prelude::*, sql_query, SqliteConnection};
 
-use super::model::{Bookmark, NewBookmark};
+use crate::models::bookmark::{Bookmark, NewBookmark};
 
-pub fn create_bookmarks_table(
-    conn: &SqliteConnection,
-) -> Result<(), diesel::result::Error> {
+pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::result::Error> {
     sql_query("CREATE TABLE bookmarks(id INTEGER PRIMARY KEY, key VARCHAR(10) NOT NULL, path VARCHAR(255) NOT NULL, description TEXT)")
         .execute(conn)?;
     Ok(())
 }
 
-pub fn get_bookmarks(
-    conn: &SqliteConnection,
-) -> Result<Vec<Bookmark>, diesel::result::Error> {
+pub fn get_bookmarks(conn: &SqliteConnection) -> Result<Vec<Bookmark>, diesel::result::Error> {
     use crate::schema::bookmarks::dsl::bookmarks;
     bookmarks.load::<Bookmark>(conn)
 }

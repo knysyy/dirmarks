@@ -5,12 +5,9 @@ use prettytable::{format, Table};
 use structopt::{clap, clap::ArgGroup, StructOpt};
 
 use crate::{
-    database::{
-        connection::establish_connection, model::Bookmark,
-        repository::get_bookmarks,
-    },
-    result::CommandResult,
+    models::{bookmark::Bookmark, result::CommandResult},
     types::CliResult,
+    utils::{bookmark_service::get_bookmarks, database::establish_connection},
 };
 
 #[derive(Debug, StructOpt)]
@@ -48,7 +45,7 @@ impl List {
             .collect::<Vec<_>>()
             .join(" ");
         print!("{}", keys);
-        Ok(CommandResult::Ok)
+        Ok(CommandResult::DisplayNone)
     }
 
     fn show_bookmark(&self, conn: &SqliteConnection) -> CliResult {
@@ -60,12 +57,7 @@ impl List {
         for bookmark in results {
             match bookmark.description {
                 Some(value) => {
-                    table.add_row(row![
-                        bookmark.id,
-                        bookmark.key,
-                        bookmark.path,
-                        value
-                    ]);
+                    table.add_row(row![bookmark.id, bookmark.key, bookmark.path, value]);
                 },
                 None => {
                     table.add_row(row![bookmark.id, bookmark.key, bookmark.path, Fr -> "None"]);
@@ -73,6 +65,6 @@ impl List {
             }
         }
         table.printstd();
-        Ok(CommandResult::Ok)
+        Ok(CommandResult::DisplayNone)
     }
 }
