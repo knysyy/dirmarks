@@ -16,7 +16,7 @@ pub struct Migrate {}
 
 impl Migrate {
     pub fn run(&self) -> CliResult {
-        let database_url = env::var("BD_DATABASE_URL").unwrap_or("~/bd.db".to_string());
+        let database_url = env::var("DM_DATABASE_URL").unwrap_or("~/bd.db".to_string());
         let path = PathBuf::from(&database_url);
         if path.exists() {
             return Err(CommandError::AlreadyInitError);
