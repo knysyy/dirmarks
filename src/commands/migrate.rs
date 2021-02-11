@@ -1,4 +1,4 @@
-use std::{env, fs::File, path::PathBuf};
+use std::{env, fs::File, io, path::PathBuf};
 
 use structopt::{clap, StructOpt};
 
@@ -18,18 +18,24 @@ impl Migrate {
     pub fn run(&self) -> CliResult {
         let database_url = env::var("DM_DATABASE_URL").unwrap_or("~/bd.db".to_string());
         let path = PathBuf::from(&database_url);
-        if path.exists() {
-            return Err(CommandError::AlreadyInitError);
+
+        if !path.exists() {
+            match File::create(path) {
+                Ok(_) => {},
+                Err(err) => {
+                    let err_kind = err.kind();
+                    if err_kind != io::ErrorKind::AlreadyExists {
+                        return Err(CommandError::IoError(err));
+                    }
+                },
+            }
         }
-        File::create(path)?;
+
         let conn = establish_connection()?;
 
         bookmark::create_bookmarks_table(&conn)?;
         history::create_histories_table(&conn)?;
 
-        Ok(CommandResult::Migrated(format!(
-            "Database file created file : {}",
-            &database_url
-        )))
+        Ok(CommandResult::Migrated(database_url.to_string()))
     }
 }

@@ -10,9 +10,6 @@ pub enum CommandError {
     #[error("This key already exist : {0}")]
     KeyAlreadyExistError(String),
 
-    #[error("Already Database file created")]
-    AlreadyInitError,
-
     #[error(transparent)]
     DieselError(#[from] diesel::result::Error),
 
