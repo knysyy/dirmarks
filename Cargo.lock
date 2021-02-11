@@ -68,21 +68,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bookmark-directory"
-version = "0.1.1"
-dependencies = [
- "anyhow",
- "colored",
- "derive_more",
- "diesel",
- "dotenv",
- "once_cell",
- "prettytable-rs",
- "structopt",
- "thiserror",
-]
-
-[[package]]
 name = "bstr"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -202,6 +187,21 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "dirmarks"
+version = "0.1.1"
+dependencies = [
+ "anyhow",
+ "colored",
+ "derive_more",
+ "diesel",
+ "dotenv",
+ "once_cell",
+ "prettytable-rs",
+ "structopt",
+ "thiserror",
 ]
 
 [[package]]

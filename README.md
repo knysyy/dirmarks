@@ -1,5 +1,5 @@
 
-# Bookmark-Directory
+# DirMarks
 
 ## Installation
 Confirm execution only with zsh.
@@ -9,25 +9,25 @@ $ make install
 Add the following to .zshrc.
 ```  
 DATABASE_URL="${HOME}/bd.db"  
-eval "$(bookmark-directory init)"  
+eval "$(dirmarks init)"  
 ```
 And run the following
 ```
 $ source ~/.zshrc
-$ bookmark-directory migrate
+$ dirmarks migrate
 ```
 
 ### How To Use
 ```
 # help
-$ bookmark-directory help
+$ dirmarks help
 
 # Alias
-ba -> bookmark-directory add
-bj -> bookmark-directory jump
-bl -> bookmark-directory list
-br -> bookmark-directory rename
-bd -> bookmark-directory delete
+ba -> dirmarks add
+bj -> dirmarks jump
+bl -> dirmarks list
+br -> dirmarks rename
+bd -> dirmarks delete
 
 # Add Bookmark
 $ cd

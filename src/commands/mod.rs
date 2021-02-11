@@ -1,4 +1,5 @@
 mod add;
+mod completion;
 mod delete;
 mod history;
 mod init;
@@ -12,7 +13,7 @@ use structopt::{clap, StructOpt};
 use crate::{constants::ERROR_STRING, errors::CommandError, models::result::CommandResult};
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "bookmark-directory")]
+#[structopt(name = "dirmarks")]
 #[structopt(long_version(option_env ! ("LONG_VERSION").unwrap_or(env ! ("CARGO_PKG_VERSION"))))]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub enum Opt {
@@ -24,6 +25,7 @@ pub enum Opt {
     Rename(rename::Rename),
     Migrate(migrate::Migrate),
     History(history::History),
+    Completion(completion::Completion),
 }
 
 impl Opt {
@@ -37,6 +39,7 @@ impl Opt {
             Opt::Rename(rename) => rename.run(),
             Opt::Migrate(migrate) => migrate.run(),
             Opt::History(history) => history.run(),
+            Opt::Completion(completion) => completion.run(),
         };
         self.print_result(result);
     }

@@ -16,7 +16,4 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(
-    bookmarks,
-    histories,
-);
+allow_tables_to_appear_in_same_query!(bookmarks, histories,);

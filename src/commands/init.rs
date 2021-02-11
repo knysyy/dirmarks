@@ -31,7 +31,7 @@ bj() {
     elif [ "$#" -eq 1 ] && [ "$1" = '-' ]; then
         _bj_cd ~- || return "$?"
     else
-        result="$(bookmark-directory jump $@)" || return "$?"
+        result="$(dirmarks jump $@)" || return "$?"
         case "$result" in
             "jump : "*)
                 _bj_cd "${result:7}" || return "$?"
@@ -47,10 +47,10 @@ bj() {
 "#;
 
 const ZSH_ALIAS: &str = r#"
-alias ba='bookmark-directory add'
-alias bl='bookmark-directory list'
-alias bd='bookmark-directory delete'
-alias br='bookmark-directory rename'
+alias ba='dirmarks add'
+alias bl='dirmarks list'
+alias bd='dirmarks delete'
+alias br='dirmarks rename'
 "#;
 
 const ZSH_AUTOCOMPLETE: &str = r#"
@@ -58,7 +58,7 @@ compdef _bj bj
 _bj() {
   local results
   local values
-  results=$(bookmark-directory list -r)
+  results=$(dirmarks list -r)
   if [[ -z "$results" ]]; then
     return 0;
   fi

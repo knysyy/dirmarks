@@ -1,5 +1,5 @@
 [package]
-name = "bookmark-directory"
+name = "dirmarks"
 version = "0.1.1"
 authors = ["Luku <luku.3659@gmail.com>"]
 edition = "2018"
