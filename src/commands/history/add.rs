@@ -16,6 +16,7 @@ pub struct HistoryAdd {}
 
 impl HistoryAdd {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         let conn = establish_connection()?;
         match env::current_dir() {
             Ok(current_dir) => {

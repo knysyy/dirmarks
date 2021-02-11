@@ -11,6 +11,7 @@ pub struct Init {}
 
 impl Init {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         let stdout = io::stdout();
         let mut handle = stdout.lock();
         writeln!(handle, "{}", ZSH).unwrap();

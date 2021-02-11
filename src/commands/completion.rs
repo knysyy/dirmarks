@@ -25,6 +25,7 @@ enum ShellOpt {
 
 impl Completion {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         match self.shell {
             ShellOpt::Zsh => {
                 Self::completion(Shell::Zsh);

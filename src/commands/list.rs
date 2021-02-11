@@ -24,6 +24,7 @@ pub struct List {
 
 impl List {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         let conn = establish_connection()?;
         if self.raw {
             return Ok(self.show_bookmark_raw(&conn)?);

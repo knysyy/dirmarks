@@ -20,6 +20,7 @@ pub struct Rename {
 
 impl Rename {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         let conn = establish_connection()?;
         match bookmark::get_bookmark(&conn, &self.new_key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.new_key.clone())),

@@ -26,6 +26,7 @@ pub struct Add {
 
 impl Add {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         let conn = establish_connection()?;
         match bookmark::get_bookmark(&conn, &self.key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.key.clone())),
@@ -46,6 +47,7 @@ impl Add {
         match env::current_dir() {
             Ok(current_dir) => {
                 let path = current_dir.to_str().unwrap();
+                debug!("{}", path);
                 bookmark::create_bookmark(conn, &self.key, path, self.description.as_deref())?;
                 Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
             },

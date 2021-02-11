@@ -17,6 +17,7 @@ pub struct Jump {
 
 impl Jump {
     pub fn run(&self) -> CliResult {
+        debug!("{:?}", self);
         let conn = establish_connection()?;
         match bookmark::get_bookmark(&conn, &self.key) {
             Ok(bookmark) => Ok(CommandResult::Jump(bookmark.path)),
