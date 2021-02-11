@@ -8,3 +8,15 @@ table! {
         description -> Nullable<Text>,
     }
 }
+
+table! {
+    histories (id) {
+        id -> Integer,
+        path -> Text,
+    }
+}
+
+allow_tables_to_appear_in_same_query!(
+    bookmarks,
+    histories,
+);

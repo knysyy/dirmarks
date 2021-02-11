@@ -2,9 +2,9 @@ use structopt::{clap, StructOpt};
 
 use crate::{
     errors::CommandError,
-    models::result::CommandResult,
+    models::{bookmark, result::CommandResult},
     types::CliResult,
-    utils::{bookmark_service, database::establish_connection},
+    utils::database::establish_connection,
 };
 
 #[derive(Debug, StructOpt)]
@@ -18,9 +18,9 @@ pub struct Delete {
 impl Delete {
     pub fn run(&self) -> CliResult {
         let conn = establish_connection()?;
-        match bookmark_service::get_bookmark(&conn, &self.key) {
+        match bookmark::get_bookmark(&conn, &self.key) {
             Ok(bookmark) => {
-                bookmark_service::delete_bookmark(&conn, &self.key)?;
+                bookmark::delete_bookmark(&conn, &self.key)?;
                 Ok(CommandResult::Deleted(bookmark.key, bookmark.path))
             },
             Err(diesel::NotFound) => Err(CommandError::KeyNotFoundError(self.key.clone())),

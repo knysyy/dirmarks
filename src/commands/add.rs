@@ -5,12 +5,9 @@ use structopt::{clap, StructOpt};
 
 use crate::{
     errors::CommandError,
-    models::result::CommandResult,
+    models::{bookmark, result::CommandResult},
     types::CliResult,
-    utils::{
-        bookmark_service::{create_bookmark, get_bookmark},
-        database::establish_connection,
-    },
+    utils::database::establish_connection,
 };
 
 #[derive(Debug, StructOpt)]
@@ -30,7 +27,7 @@ pub struct Add {
 impl Add {
     pub fn run(&self) -> CliResult {
         let conn = establish_connection()?;
-        match get_bookmark(&conn, &self.key) {
+        match bookmark::get_bookmark(&conn, &self.key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.key.clone())),
             Err(diesel::NotFound) => match &self.path {
                 Some(path) => self.add_path_to_bookmark(&conn, &path),
@@ -41,7 +38,7 @@ impl Add {
     }
 
     fn add_path_to_bookmark(&self, conn: &SqliteConnection, path: &str) -> CliResult {
-        create_bookmark(conn, &self.key, &path, self.description.as_deref())?;
+        bookmark::create_bookmark(conn, &self.key, &path, self.description.as_deref())?;
         Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
     }
 
@@ -49,7 +46,7 @@ impl Add {
         match env::current_dir() {
             Ok(current_dir) => {
                 let path = current_dir.to_str().unwrap();
-                create_bookmark(conn, &self.key, path, self.description.as_deref())?;
+                bookmark::create_bookmark(conn, &self.key, path, self.description.as_deref())?;
                 Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
             },
             Err(err) => Err(CommandError::IoError(err)),

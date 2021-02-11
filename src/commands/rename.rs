@@ -2,9 +2,9 @@ use structopt::{clap, StructOpt};
 
 use crate::{
     errors::CommandError,
-    models::result::CommandResult,
+    models::{bookmark, result::CommandResult},
     types::CliResult,
-    utils::{bookmark_service, database::establish_connection},
+    utils::database::establish_connection,
 };
 
 #[derive(Debug, StructOpt)]
@@ -21,11 +21,11 @@ pub struct Rename {
 impl Rename {
     pub fn run(&self) -> CliResult {
         let conn = establish_connection()?;
-        match bookmark_service::get_bookmark(&conn, &self.new_key) {
+        match bookmark::get_bookmark(&conn, &self.new_key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.new_key.clone())),
-            Err(diesel::NotFound) => match bookmark_service::get_bookmark(&conn, &self.old_key) {
+            Err(diesel::NotFound) => match bookmark::get_bookmark(&conn, &self.old_key) {
                 Ok(_) => {
-                    bookmark_service::rename_bookmark(&conn, &self.old_key, &self.new_key)?;
+                    bookmark::rename_bookmark(&conn, &self.old_key, &self.new_key)?;
                     Ok(CommandResult::Renamed(
                         self.old_key.to_string(),
                         self.new_key.to_string(),

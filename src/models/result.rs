@@ -4,6 +4,8 @@ use crate::constants::SUCCESS_STRING;
 
 #[derive(Display)]
 pub enum CommandResult {
+    #[display(fmt = "")]
+    DisplayNone,
     #[display(fmt = "{} : Added {} -> {}", "*SUCCESS_STRING", _0, _1)]
     Added(String, String),
     #[display(fmt = "{} : Deleted {} -> {}", "*SUCCESS_STRING", _0, _1)]
@@ -14,6 +16,4 @@ pub enum CommandResult {
     Jump(String),
     #[display(fmt = "{} : Migrated {}", "*SUCCESS_STRING", _0)]
     Migrated(String),
-    #[display(fmt = "")]
-    DisplayNone,
 }
