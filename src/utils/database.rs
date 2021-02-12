@@ -1,10 +1,7 @@
-use std::env;
-
 use diesel::{prelude::*, sqlite::SqliteConnection};
 
-use crate::errors::CommandError;
+use crate::{errors::CommandError, utils::config::CONFIG};
 
 pub fn establish_connection() -> Result<SqliteConnection, CommandError> {
-    let database_url = env::var("DM_DATABASE_URL")?;
-    Ok(SqliteConnection::establish(&database_url)?)
+    Ok(SqliteConnection::establish(&CONFIG.database_url)?)
 }

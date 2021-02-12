@@ -1,4 +1,4 @@
-use std::{env, fs::File, io, path::PathBuf};
+use std::{fs::File, io, path::PathBuf};
 
 use structopt::{clap, StructOpt};
 
@@ -6,7 +6,7 @@ use crate::{
     errors::CommandError,
     models::{bookmark, history, result::CommandResult},
     types::CliResult,
-    utils::database::establish_connection,
+    utils::{config::CONFIG, database::establish_connection},
 };
 
 #[derive(Debug, StructOpt)]
@@ -16,8 +16,7 @@ pub struct Migrate {}
 
 impl Migrate {
     pub fn run(&self) -> CliResult {
-        let database_url = env::var("DM_DATABASE_URL").unwrap_or("~/bd.db".to_string());
-        let path = PathBuf::from(&database_url);
+        let path = PathBuf::from(&CONFIG.database_url);
 
         if !path.exists() {
             match File::create(path) {
@@ -36,6 +35,6 @@ impl Migrate {
         bookmark::create_bookmarks_table(&conn)?;
         history::create_histories_table(&conn)?;
 
-        Ok(CommandResult::Migrated(database_url.to_string()))
+        Ok(CommandResult::Migrated(CONFIG.database_url.clone()))
     }
 }

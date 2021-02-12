@@ -21,7 +21,10 @@ pub mod types;
 pub mod utils;
 
 fn main() {
-    dotenv().ok();
+    let result = dotenv();
+    if result.is_err() {
+        env::set_var("RUST_LOG", "info");
+    }
     env_logger::init();
     let opt: Opt = Opt::from_args();
     debug!("{:?}", opt);
