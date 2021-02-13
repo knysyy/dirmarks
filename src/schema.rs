@@ -13,6 +13,9 @@ table! {
     histories (id) {
         id -> Integer,
         path -> Text,
+        count -> Integer,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
     }
 }
 

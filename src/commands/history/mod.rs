@@ -2,7 +2,7 @@ use structopt::{clap, StructOpt};
 
 use crate::types::CliResult;
 
-mod add;
+mod jump;
 mod save;
 
 #[derive(Debug, StructOpt)]
@@ -10,14 +10,14 @@ mod save;
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub enum History {
     Save(save::HistorySave),
-    Add(add::HistoryAdd),
+    Jump(jump::HistoryJump),
 }
 
 impl History {
     pub fn run(&self) -> CliResult {
         match self {
             History::Save(history_save) => history_save.run(),
-            History::Add(history_add) => history_add.run(),
+            History::Jump(history_add) => history_add.run(),
         }
     }
 }

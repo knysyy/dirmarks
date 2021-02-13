@@ -25,6 +25,9 @@ pub enum CommandError {
 
     #[error(transparent)]
     ConnectionErr(#[from] diesel::ConnectionError),
+
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
 }
 
 #[derive(Display)]

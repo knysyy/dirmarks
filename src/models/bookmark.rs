@@ -20,13 +20,14 @@ pub struct NewBookmark<'a> {
 }
 
 pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::result::Error> {
+    // TODO load sql or diesel_migration
     sql_query("CREATE TABLE IF NOT EXISTS bookmarks(id INTEGER PRIMARY KEY, key VARCHAR(10) NOT NULL, path VARCHAR(255) NOT NULL, description TEXT)")
         .execute(conn)?;
     Ok(())
 }
 
 pub fn get_bookmarks(conn: &SqliteConnection) -> Result<Vec<Bookmark>, diesel::result::Error> {
-    use crate::schema::bookmarks::dsl::bookmarks;
+    use crate::schema::bookmarks::dsl::*;
     bookmarks.load::<Bookmark>(conn)
 }
 

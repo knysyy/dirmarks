@@ -1,5 +1,6 @@
 use std::env;
 
+use anyhow::Context;
 use structopt::{clap, StructOpt};
 
 use crate::{
@@ -17,13 +18,21 @@ impl HistorySave {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = establish_connection()?;
-        match env::current_dir() {
-            Ok(current_dir) => {
-                let path = current_dir.to_str().unwrap();
-                history::create_histories(&conn, path)?;
-                Ok(CommandResult::DisplayNone)
+        let current_dir = env::current_dir().context("Failed to get the current directory.")?;
+        let path = current_dir
+            .to_str()
+            .context("Failed to convert current directory to path.")?;
+        match history::get_history(&conn, &path) {
+            Ok(history) => {
+                history::update_count(&conn, &history.path, history.count + 1)?;
             },
-            Err(err) => Err(CommandError::IoError(err)),
+            Err(diesel::NotFound) => {
+                history::create_histories(&conn, path)?;
+            },
+            Err(err) => {
+                return Err(CommandError::DieselError(err));
+            },
         }
+        Ok(CommandResult::DisplayNone)
     }
 }
