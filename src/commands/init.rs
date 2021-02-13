@@ -22,20 +22,20 @@ impl Init {
 }
 
 const ZSH: &str = r#"
-_bj_cd() {
+_dirmarks_cd() {
     cd "$@" || return "$?"
 }
 
 bj() {
     if [ "$#" -eq 0 ]; then
-        _bj_cd ~ || return "$?"
+        _dirmarks_cd ~ || return "$?"
     elif [ "$#" -eq 1 ] && [ "$1" = '-' ]; then
-        _bj_cd ~- || return "$?"
+        _dirmarks_cd ~- || return "$?"
     else
         result="$(dirmarks jump $@)" || return "$?"
         case "$result" in
             "jump : "*)
-                _bj_cd "${result:7}" || return "$?"
+                _dirmarks_cd "${result:7}" || return "$?"
                 ;;
             *)
                 if [ -n "$result" ]; then
@@ -44,6 +44,20 @@ bj() {
                 ;;
         esac
     fi
+}
+
+bh() {
+    result="$(dirmarks history jump $@)" || return "$?"
+    case "$result" in
+        "jump : "*)
+            _dirmarks_cd "${result:7}" || return "$?"
+            ;;
+        *)
+            if [ -n "$result" ]; then
+                echo "$result"
+            fi
+            ;;
+    esac
 }
 "#;
 

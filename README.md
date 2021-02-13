@@ -1,8 +1,7 @@
-
 # DirMarks
 
 ## Installation
-Confirm execution only with zsh.
+Confirm execution only with zsh on macos.
 ```
 $ make install  
 ```  
@@ -10,6 +9,7 @@ Add the following to .zshrc.
 ```  
 DATABASE_URL="${HOME}/bd.db"  
 eval "$(dirmarks init)"  
+chpwd() {dirmarks history save}
 ```
 And run the following
 ```
@@ -24,7 +24,6 @@ $ dirmarks help
 
 # Alias
 ba -> dirmarks add
-bj -> dirmarks jump
 bl -> dirmarks list
 br -> dirmarks rename
 bd -> dirmarks delete
@@ -52,6 +51,10 @@ Success : Renamed home -> home2
 # Delete Bookmark
 $ bd home2
 Success : Deleted home2 -> your home directory
+
+# Jump From History
+Need to instal fzf
+$ bh
 ```
 
 ## Develop

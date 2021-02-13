@@ -22,7 +22,7 @@ impl HistoryJump {
         let mut fzf = Fzf::new()?;
         let handle = fzf.stdin();
         for history in &histories {
-            write!(handle, "{}", history.path)?;
+            writeln!(handle, "{}", history.path)?;
         }
         let selection = fzf.wait_select()?;
         Ok(CommandResult::Jump(selection))
