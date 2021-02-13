@@ -3,9 +3,8 @@ use std::{fs::File, io, path::PathBuf};
 use structopt::{clap, StructOpt};
 
 use crate::{
-    errors::CommandError,
-    models::{bookmark, history, result::CommandResult},
-    types::CliResult,
+    models::{bookmark, history},
+    types::{CliResult, CommandError, CommandResult},
     utils::{config::CONFIG, database::establish_connection},
 };
 

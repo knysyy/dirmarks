@@ -14,7 +14,7 @@ use crate::commands::Opt;
 
 pub mod commands;
 pub mod constants;
-pub mod errors;
+pub mod fzf;
 pub mod models;
 pub mod schema;
 pub mod types;

@@ -5,11 +5,8 @@ use prettytable::{format, Table};
 use structopt::{clap, clap::ArgGroup, StructOpt};
 
 use crate::{
-    models::{
-        bookmark::{self, Bookmark},
-        result::CommandResult,
-    },
-    types::CliResult,
+    models::bookmark::{self, Bookmark},
+    types::{CliResult, CommandResult},
     utils::database::establish_connection,
 };
 

@@ -5,7 +5,10 @@ use structopt::{
     StructOpt,
 };
 
-use crate::{commands::Opt, models::result::CommandResult, types::CliResult};
+use crate::{
+    commands::Opt,
+    types::{CliResult, CommandResult},
+};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "completion", about = "print completion")]

@@ -1,9 +1,8 @@
 use structopt::{clap, StructOpt};
 
 use crate::{
-    errors::CommandError,
-    models::{bookmark, result::CommandResult},
-    types::CliResult,
+    models::bookmark,
+    types::{CliResult, CommandError, CommandResult},
     utils::database::establish_connection,
 };
 

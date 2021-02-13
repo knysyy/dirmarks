@@ -10,7 +10,10 @@ mod rename;
 
 use structopt::{clap, StructOpt};
 
-use crate::{constants::ERROR_STRING, errors::CommandError, models::result::CommandResult};
+use crate::{
+    constants::ERROR_STRING,
+    types::{CommandError, CommandResult},
+};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "dirmarks")]
