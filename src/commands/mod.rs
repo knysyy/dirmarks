@@ -1,12 +1,6 @@
-mod add;
-mod completion;
-mod delete;
+mod basic;
 mod history;
-mod init;
-mod jump;
-mod list;
-mod migrate;
-mod rename;
+mod util;
 
 use structopt::{clap, StructOpt};
 
@@ -20,15 +14,15 @@ use crate::{
 #[structopt(long_version(option_env ! ("LONG_VERSION").unwrap_or(env ! ("CARGO_PKG_VERSION"))))]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub enum Opt {
-    Init(init::Init),
-    Add(add::Add),
-    Jump(jump::Jump),
-    List(list::List),
-    Delete(delete::Delete),
-    Rename(rename::Rename),
-    Migrate(migrate::Migrate),
+    Init(util::init::Init),
+    Migrate(util::migrate::Migrate),
+    Completion(util::completion::Completion),
+    Add(basic::add::Add),
+    Jump(basic::jump::Jump),
+    List(basic::list::List),
+    Delete(basic::delete::Delete),
+    Rename(basic::rename::Rename),
     History(history::History),
-    Completion(completion::Completion),
 }
 
 impl Opt {

@@ -22,7 +22,7 @@ pub struct NewBookmark<'a> {
 pub enum Order {
     Id,
     Key,
-    Path
+    Path,
 }
 
 pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::result::Error> {
@@ -32,7 +32,11 @@ pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::res
     Ok(())
 }
 
-pub fn get_bookmarks(conn: &SqliteConnection, order: Order, desc: bool) -> Result<Vec<Bookmark>, diesel::result::Error> {
+pub fn get_bookmarks(
+    conn: &SqliteConnection,
+    order: Order,
+    desc: bool,
+) -> Result<Vec<Bookmark>, diesel::result::Error> {
     use crate::schema::bookmarks::*;
     let mut query = bookmarks::table.into_boxed();
     if desc {

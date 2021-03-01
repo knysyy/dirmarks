@@ -1,5 +1,6 @@
 use std::borrow::Borrow;
 
+use anyhow::Context;
 use diesel::SqliteConnection;
 use prettytable::{format, Table};
 use structopt::{clap, StructOpt};
@@ -9,7 +10,6 @@ use crate::{
     types::{CliResult, CommandResult},
     utils::database::establish_connection,
 };
-use anyhow::Context;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "list", about = "list directory")]
@@ -28,7 +28,7 @@ pub struct List {
     path: bool,
 
     #[structopt(short, long)]
-    desc: bool
+    desc: bool,
 }
 
 impl List {
@@ -48,7 +48,8 @@ impl List {
             bookmark::get_bookmarks(&conn, Order::Path, self.desc)
         } else {
             bookmark::get_bookmarks(&conn, Order::Id, self.desc)
-        }.context("ブックマークの取得に失敗しました。")
+        }
+        .context("ブックマークの取得に失敗しました。")
     }
 
     fn show_bookmark_raw(&self, conn: &SqliteConnection) -> CliResult {

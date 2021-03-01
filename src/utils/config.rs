@@ -22,8 +22,8 @@ impl Config {
                 Err(err) => {
                     debug!("{:?}", err);
                     Self::default()
-                }
-            }
+                },
+            };
         }
         Self::default()
     }
