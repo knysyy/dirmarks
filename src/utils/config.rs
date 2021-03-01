@@ -14,8 +14,15 @@ impl Config {
         let result = cfg.merge(config::Environment::with_prefix("DM"));
         if result.is_ok() {
             let result = cfg.try_into();
-            if result.is_ok() {
-                return result.unwrap();
+            return match result {
+                Ok(config) => {
+                    debug!("{:?}", config);
+                    config
+                },
+                Err(err) => {
+                    debug!("{:?}", err);
+                    Self::default()
+                }
             }
         }
         Self::default()

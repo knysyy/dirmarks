@@ -2,21 +2,33 @@ use std::borrow::Borrow;
 
 use diesel::SqliteConnection;
 use prettytable::{format, Table};
-use structopt::{clap, clap::ArgGroup, StructOpt};
+use structopt::{clap, StructOpt};
 
 use crate::{
-    models::bookmark::{self, Bookmark},
+    models::bookmark::{self, Bookmark, Order},
     types::{CliResult, CommandResult},
     utils::database::establish_connection,
 };
+use anyhow::Context;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "list", about = "list directory")]
-#[structopt(group = ArgGroup::with_name("option").required(false))]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub struct List {
-    #[structopt(short, long, group = "option")]
+    #[structopt(short, long)]
     raw: bool,
+
+    #[structopt(short, long, conflicts_with_all(&["key", "path"]))]
+    id: bool,
+
+    #[structopt(short, long, conflicts_with_all(&["id", "path"]))]
+    key: bool,
+
+    #[structopt(short, long, conflicts_with_all(&["id", "key"]))]
+    path: bool,
+
+    #[structopt(short, long)]
+    desc: bool
 }
 
 impl List {
@@ -29,8 +41,18 @@ impl List {
         return Ok(self.show_bookmark(&conn)?);
     }
 
+    fn get_bookmarks(&self, conn: &SqliteConnection) -> anyhow::Result<Vec<Bookmark>> {
+        if self.key {
+            bookmark::get_bookmarks(&conn, Order::Key, self.desc)
+        } else if self.path {
+            bookmark::get_bookmarks(&conn, Order::Path, self.desc)
+        } else {
+            bookmark::get_bookmarks(&conn, Order::Id, self.desc)
+        }.context("ブックマークの取得に失敗しました。")
+    }
+
     fn show_bookmark_raw(&self, conn: &SqliteConnection) -> CliResult {
-        let results: Vec<Bookmark> = bookmark::get_bookmarks(&conn)?;
+        let results = self.get_bookmarks(conn)?;
         let keys = results
             .iter()
             .map(|bookmark| {
@@ -53,7 +75,7 @@ impl List {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         table.add_row(row![bFc => "id", "key", "path", "description"]);
-        let results: Vec<Bookmark> = bookmark::get_bookmarks(&conn)?;
+        let results = self.get_bookmarks(conn)?;
         println!("Displaying {} directories", results.len());
         for bookmark in results {
             match bookmark.description {

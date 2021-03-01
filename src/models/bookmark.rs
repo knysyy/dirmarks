@@ -19,6 +19,12 @@ pub struct NewBookmark<'a> {
     pub description: Option<&'a str>,
 }
 
+pub enum Order {
+    Id,
+    Key,
+    Path
+}
+
 pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::result::Error> {
     // TODO load sql or diesel_migration
     sql_query("CREATE TABLE IF NOT EXISTS bookmarks(id INTEGER PRIMARY KEY, key VARCHAR(10) NOT NULL, path VARCHAR(255) NOT NULL, description TEXT)")
@@ -26,9 +32,23 @@ pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::res
     Ok(())
 }
 
-pub fn get_bookmarks(conn: &SqliteConnection) -> Result<Vec<Bookmark>, diesel::result::Error> {
-    use crate::schema::bookmarks::dsl::*;
-    bookmarks.load::<Bookmark>(conn)
+pub fn get_bookmarks(conn: &SqliteConnection, order: Order, desc: bool) -> Result<Vec<Bookmark>, diesel::result::Error> {
+    use crate::schema::bookmarks::*;
+    let mut query = bookmarks::table.into_boxed();
+    if desc {
+        query = match order {
+            Order::Id => query.order(id.desc()),
+            Order::Key => query.order(key.desc()),
+            Order::Path => query.order(path.desc()),
+        };
+    } else {
+        query = match order {
+            Order::Id => query.order(id.asc()),
+            Order::Key => query.order(key.asc()),
+            Order::Path => query.order(path.asc()),
+        };
+    }
+    query.load::<Bookmark>(conn)
 }
 
 pub fn get_bookmark(
