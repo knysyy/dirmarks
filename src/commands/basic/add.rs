@@ -1,6 +1,5 @@
 use std::env;
 
-use diesel::SqliteConnection;
 use structopt::{clap, StructOpt};
 
 use crate::{
@@ -8,6 +7,7 @@ use crate::{
     types::{CliResult, CommandError, CommandResult},
     utils::database::establish_connection,
 };
+use anyhow::Context;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "add", about = "save directory")]
@@ -27,30 +27,24 @@ impl Add {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = establish_connection()?;
-        match bookmark::get_bookmark(&conn, &self.key) {
+        let current_dir =  env::current_dir()?;
+        let path = match &self.path {
+            Some(path) => path,
+            None => current_dir.to_str().context("Failed to get current dir.")?
+        };
+        match bookmark::get_bookmark_by_key(&conn, &self.key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.key.clone())),
-            Err(diesel::NotFound) => match &self.path {
-                Some(path) => self.add_path_to_bookmark(&conn, &path),
-                None => self.add_current_path_to_bookmark(&conn),
+            Err(diesel::NotFound) => {
+                match bookmark::get_bookmark_by_path(&conn, &path) {
+                    Ok(_) => Err(CommandError::PathAlreadyExistError(path.to_string())),
+                    Err(diesel::NotFound) => {
+                        bookmark::create_bookmark(&conn, &self.key, &path, self.description.as_deref())?;
+                        Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
+                    },
+                    Err(err) => Err(CommandError::DieselError(err)),
+                }
             },
             Err(err) => Err(CommandError::DieselError(err)),
-        }
-    }
-
-    fn add_path_to_bookmark(&self, conn: &SqliteConnection, path: &str) -> CliResult {
-        bookmark::create_bookmark(conn, &self.key, &path, self.description.as_deref())?;
-        Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
-    }
-
-    fn add_current_path_to_bookmark(&self, conn: &SqliteConnection) -> CliResult {
-        match env::current_dir() {
-            Ok(current_dir) => {
-                let path = current_dir.to_str().unwrap();
-                debug!("{}", path);
-                bookmark::create_bookmark(conn, &self.key, path, self.description.as_deref())?;
-                Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
-            },
-            Err(err) => Err(CommandError::IoError(err)),
         }
     }
 }

@@ -55,12 +55,20 @@ pub fn get_bookmarks(
     query.load::<Bookmark>(conn)
 }
 
-pub fn get_bookmark(
+pub fn get_bookmark_by_key(
     conn: &SqliteConnection,
     input_key: &str,
 ) -> Result<Bookmark, diesel::result::Error> {
     use crate::schema::bookmarks::dsl::*;
     bookmarks.filter(key.eq(input_key)).first::<Bookmark>(conn)
+}
+
+pub fn get_bookmark_by_path(
+    conn: &SqliteConnection,
+    input_path: &str,
+) -> Result<Bookmark, diesel::result::Error> {
+    use crate::schema::bookmarks::dsl::*;
+    bookmarks.filter(path.eq(input_path)).first::<Bookmark>(conn)
 }
 
 pub fn create_bookmark<'a>(

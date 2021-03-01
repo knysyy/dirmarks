@@ -18,7 +18,7 @@ impl Delete {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = establish_connection()?;
-        match bookmark::get_bookmark(&conn, &self.key) {
+        match bookmark::get_bookmark_by_key(&conn, &self.key) {
             Ok(bookmark) => {
                 bookmark::delete_bookmark(&conn, &self.key)?;
                 Ok(CommandResult::Deleted(bookmark.key, bookmark.path))

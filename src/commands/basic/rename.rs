@@ -21,9 +21,9 @@ impl Rename {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = establish_connection()?;
-        match bookmark::get_bookmark(&conn, &self.new_key) {
+        match bookmark::get_bookmark_by_key(&conn, &self.new_key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.new_key.clone())),
-            Err(diesel::NotFound) => match bookmark::get_bookmark(&conn, &self.old_key) {
+            Err(diesel::NotFound) => match bookmark::get_bookmark_by_key(&conn, &self.old_key) {
                 Ok(_) => {
                     bookmark::rename_bookmark(&conn, &self.old_key, &self.new_key)?;
                     Ok(CommandResult::Renamed(

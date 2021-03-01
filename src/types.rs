@@ -14,6 +14,9 @@ pub enum CommandError {
     #[error("This key already exist : {0}")]
     KeyAlreadyExistError(String),
 
+    #[error("This path already exist : {0}")]
+    PathAlreadyExistError(String),
+
     #[error(transparent)]
     DieselError(#[from] diesel::result::Error),
 
