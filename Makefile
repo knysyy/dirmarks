@@ -14,4 +14,7 @@ install:
 
 completion:
 	RUST_LOG=info cargo run completion zsh > ${F_PATH}/_dirmarks
+
+debug:
+    RUST_LOG=debug cargo ${ARG}
 #============================================

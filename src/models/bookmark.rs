@@ -68,7 +68,9 @@ pub fn get_bookmark_by_path(
     input_path: &str,
 ) -> Result<Bookmark, diesel::result::Error> {
     use crate::schema::bookmarks::dsl::*;
-    bookmarks.filter(path.eq(input_path)).first::<Bookmark>(conn)
+    bookmarks
+        .filter(path.eq(input_path))
+        .first::<Bookmark>(conn)
 }
 
 pub fn create_bookmark<'a>(

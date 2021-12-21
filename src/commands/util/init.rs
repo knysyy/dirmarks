@@ -66,6 +66,7 @@ alias ba='dirmarks add'
 alias bl='dirmarks list'
 alias bd='dirmarks delete'
 alias br='dirmarks rename'
+alias bc='dirmarks check'
 "#;
 
 const ZSH_AUTOCOMPLETE: &str = r#"

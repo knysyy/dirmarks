@@ -1,13 +1,13 @@
-mod basic;
-mod history;
-mod util;
-
 use structopt::{clap, StructOpt};
 
 use crate::{
     constants::ERROR_STRING,
     types::{CommandError, CommandResult},
 };
+
+mod basic;
+mod history;
+mod util;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "dirmarks")]
@@ -23,6 +23,7 @@ pub enum Opt {
     Delete(basic::delete::Delete),
     Rename(basic::rename::Rename),
     History(history::History),
+    Check(basic::check::Check),
 }
 
 impl Opt {
@@ -37,6 +38,7 @@ impl Opt {
             Opt::Migrate(migrate) => migrate.run(),
             Opt::History(history) => history.run(),
             Opt::Completion(completion) => completion.run(),
+            Opt::Check(check) => check.run(),
         };
         self.print_result(result);
     }
@@ -47,7 +49,7 @@ impl Opt {
                 CommandResult::DisplayNone => {},
                 _ => println!("{}", command_result),
             },
-            Err(err) => println!("{} : {}", *ERROR_STRING, err),
+            Err(err) => error!("{} : {}", *ERROR_STRING, err),
         }
     }
 }
