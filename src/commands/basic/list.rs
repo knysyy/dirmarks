@@ -36,18 +36,18 @@ impl List {
         debug!("{:?}", self);
         let conn = establish_connection()?;
         if self.raw {
-            return Ok(self.show_bookmark_raw(&conn)?);
+            return self.show_bookmark_raw(&conn);
         }
-        return Ok(self.show_bookmark(&conn)?);
+        self.show_bookmark(&conn)
     }
 
     fn get_bookmarks(&self, conn: &SqliteConnection) -> anyhow::Result<Vec<Bookmark>> {
         if self.key {
-            bookmark::get_bookmarks(&conn, Order::Key, self.desc)
+            bookmark::get_bookmarks(conn, Order::Key, self.desc)
         } else if self.path {
-            bookmark::get_bookmarks(&conn, Order::Path, self.desc)
+            bookmark::get_bookmarks(conn, Order::Path, self.desc)
         } else {
-            bookmark::get_bookmarks(&conn, Order::Id, self.desc)
+            bookmark::get_bookmarks(conn, Order::Id, self.desc)
         }
         .context("ブックマークの取得に失敗しました。")
     }

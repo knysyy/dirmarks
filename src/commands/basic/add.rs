@@ -34,13 +34,13 @@ impl Add {
         };
         match bookmark::get_bookmark_by_key(&conn, &self.key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.key.clone())),
-            Err(diesel::NotFound) => match bookmark::get_bookmark_by_path(&conn, &path) {
+            Err(diesel::NotFound) => match bookmark::get_bookmark_by_path(&conn, path) {
                 Ok(_) => Err(CommandError::PathAlreadyExistError(path.to_string())),
                 Err(diesel::NotFound) => {
                     bookmark::create_bookmark(
                         &conn,
                         &self.key,
-                        &path,
+                        path,
                         self.description.as_deref(),
                     )?;
                     Ok(CommandResult::Added(self.key.to_string(), path.to_string()))

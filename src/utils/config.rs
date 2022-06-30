@@ -29,4 +29,4 @@ impl Config {
     }
 }
 
-pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::from_env());
+pub static CONFIG: Lazy<Config> = Lazy::new(Config::from_env);
