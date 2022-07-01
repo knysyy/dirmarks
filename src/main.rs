@@ -5,8 +5,6 @@ extern crate log;
 #[macro_use]
 extern crate prettytable;
 
-use std::env;
-
 use dotenv::dotenv;
 use structopt::StructOpt;
 
@@ -21,10 +19,7 @@ pub mod types;
 pub mod utils;
 
 fn main() {
-    let result = dotenv();
-    if result.is_err() {
-        env::set_var("RUST_LOG", "info");
-    }
+    dotenv().ok();
     env_logger::init();
     let opt: Opt = Opt::from_args();
     debug!("{:?}", opt);

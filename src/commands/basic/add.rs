@@ -37,12 +37,7 @@ impl Add {
             Err(diesel::NotFound) => match bookmark::get_bookmark_by_path(&conn, path) {
                 Ok(_) => Err(CommandError::PathAlreadyExistError(path.to_string())),
                 Err(diesel::NotFound) => {
-                    bookmark::create_bookmark(
-                        &conn,
-                        &self.key,
-                        path,
-                        self.description.as_deref(),
-                    )?;
+                    bookmark::create_bookmark(&conn, &self.key, path, self.description.as_deref())?;
                     Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
                 },
                 Err(err) => Err(CommandError::DieselError(err)),

@@ -1,32 +1,25 @@
-use config::{Config, Environment};
+use envy;
 use once_cell::sync::Lazy;
 use serde::Deserialize;
 use smart_default::SmartDefault;
 
 #[derive(Debug, Deserialize, SmartDefault)]
 pub struct AppConfig {
-    #[default = "./dm.db"]
+    #[default = "~/dirmarks.db"]
     pub database_url: String,
 }
 
 impl AppConfig {
     pub fn from_env() -> Self {
-        let cfg = Config::builder()
-            .add_source(Environment::with_prefix("DM"))
-            .build();
-
-        match cfg {
-            Ok(config) => {
-                // TODO avoid using unwrap
-                let app_config: AppConfig = config.try_deserialize().unwrap();
-                debug!("{:?}", app_config);
-                app_config
-            }
+        let config = match envy::prefixed("DM_").from_env::<AppConfig>() {
+            Ok(cfg) => cfg,
             Err(e) => {
-                debug!("{:?}", e);
+                error!("{:?}", e);
                 Self::default()
-            }
-        }
+            },
+        };
+        debug!("{:?}", config);
+        config
     }
 }
 
