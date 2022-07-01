@@ -49,7 +49,7 @@ impl Opt {
                 CommandResult::DisplayNone => {},
                 _ => println!("{}", command_result),
             },
-            Err(err) => error!("{} : {}", *ERROR_STRING, err),
+            Err(err) => println!("{} : {}", *ERROR_STRING, err),
         }
     }
 }
