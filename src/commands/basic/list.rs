@@ -83,27 +83,29 @@ impl List {
             match &bookmark.description {
                 Some(value) => {
                     table.add_row(row![bookmark.id, bookmark.key, bookmark.path, value]);
-                }
+                },
                 None => {
                     table.add_row(row![bookmark.id, bookmark.key, bookmark.path, Fr -> "None"]);
-                }
+                },
             }
         }
         // TODO 色が付かなくなったので修正。
-        Ok(CommandResult::List(format!("Displaying {} directories\n{}", results.len(), table.to_string())))
+        Ok(CommandResult::List(format!(
+            "Displaying {} directories\n{}",
+            results.len(),
+            table.to_string()
+        )))
     }
 }
 
 #[cfg(test)]
 mod tests {
     use std::fs;
+
     use dotenv;
 
-    use crate::models::bookmark;
-    use crate::utils::config::CONFIG;
-    use crate::types::CommandResult;
-
     use super::*;
+    use crate::{models::bookmark, types::CommandResult, utils::config::CONFIG};
 
     fn setup() {
         dotenv::from_path(".env.test").ok();
@@ -111,14 +113,21 @@ mod tests {
         let conn = establish_connection().unwrap();
         bookmark::create_bookmarks_table(&conn).unwrap();
         bookmark::create_bookmark(&conn, "key1", "/example", Option::Some("description")).unwrap();
-        bookmark::create_bookmark(&conn, "key2", "/example2", Option::Some("description2")).unwrap();
+        bookmark::create_bookmark(&conn, "key2", "/example2", Option::Some("description2"))
+            .unwrap();
     }
 
     #[test]
     fn show_bookmark_raw_no_option() {
         setup();
         let conn = establish_connection().unwrap();
-        let list = List { raw: true, id: false, key: false, path: false, desc: false };
+        let list = List {
+            raw: true,
+            id: false,
+            key: false,
+            path: false,
+            desc: false,
+        };
         let expected = CommandResult::List("'key1[description]' 'key2[description2]'".to_string());
         let result = list.show_bookmark_raw(&conn).unwrap();
         assert_eq!(expected, result);
@@ -128,7 +137,13 @@ mod tests {
     fn show_bookmark_no_option() {
         setup();
         let conn = establish_connection().unwrap();
-        let list = List { raw: false, id: false, key: false, path: false, desc: false };
+        let list = List {
+            raw: false,
+            id: false,
+            key: false,
+            path: false,
+            desc: false,
+        };
         let expected = "Displaying 2 directories\n".to_string()
             + " id | key  | path      | description \n"
             + "----+------+-----------+--------------\n"
