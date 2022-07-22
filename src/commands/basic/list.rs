@@ -103,6 +103,7 @@ mod tests {
     use std::fs;
 
     use dotenv;
+    use serial_test::serial;
 
     use super::*;
     use crate::{models::bookmark, types::CommandResult, utils::config::CONFIG};
@@ -118,6 +119,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn show_bookmark_raw_no_option() {
         setup();
         let conn = establish_connection().unwrap();
@@ -134,6 +136,7 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn show_bookmark_no_option() {
         setup();
         let conn = establish_connection().unwrap();
