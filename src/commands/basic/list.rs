@@ -36,9 +36,10 @@ impl List {
         debug!("{:?}", self);
         let conn = establish_connection()?;
         if self.raw {
-            return self.show_bookmark_raw(&conn);
+            self.show_bookmark_raw(&conn)
+        } else {
+            self.show_bookmark(&conn)
         }
-        self.show_bookmark(&conn)
     }
 
     fn get_bookmarks(&self, conn: &SqliteConnection) -> anyhow::Result<Vec<Bookmark>> {
@@ -51,7 +52,7 @@ impl List {
         } else {
             bookmark::get_bookmarks(conn, Order::Id, self.desc)
         }
-        .context("ブックマークの取得に失敗しました。")
+        .context("Failed to get bookmarks")
     }
 
     fn show_bookmark_raw(&self, conn: &SqliteConnection) -> CliResult {
@@ -70,8 +71,7 @@ impl List {
             })
             .collect::<Vec<_>>()
             .join(" ");
-        print!("{}", keys);
-        Ok(CommandResult::DisplayNone)
+        Ok(CommandResult::List(keys))
     }
 
     fn show_bookmark(&self, conn: &SqliteConnection) -> CliResult {
@@ -79,18 +79,62 @@ impl List {
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         table.set_titles(row![bFc => "id", "key", "path", "description"]);
         let results = self.get_bookmarks(conn)?;
-        println!("Displaying {} directories", results.len());
-        for bookmark in results {
-            match bookmark.description {
+        for bookmark in &results {
+            match &bookmark.description {
                 Some(value) => {
                     table.add_row(row![bookmark.id, bookmark.key, bookmark.path, value]);
-                },
+                }
                 None => {
                     table.add_row(row![bookmark.id, bookmark.key, bookmark.path, Fr -> "None"]);
-                },
+                }
             }
         }
-        table.printstd();
-        Ok(CommandResult::DisplayNone)
+        // TODO 色が付かなくなったので修正。
+        Ok(CommandResult::List(format!("Displaying {} directories\n{}", results.len(), table.to_string())))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+    use dotenv;
+
+    use crate::models::bookmark;
+    use crate::utils::config::CONFIG;
+    use crate::types::CommandResult;
+
+    use super::*;
+
+    fn setup() {
+        dotenv::from_path(".env.test").ok();
+        fs::remove_file(&CONFIG.database_url).unwrap();
+        let conn = establish_connection().unwrap();
+        bookmark::create_bookmarks_table(&conn).unwrap();
+        bookmark::create_bookmark(&conn, "key1", "/example", Option::Some("description")).unwrap();
+        bookmark::create_bookmark(&conn, "key2", "/example2", Option::Some("description2")).unwrap();
+    }
+
+    #[test]
+    fn show_bookmark_raw_no_option() {
+        setup();
+        let conn = establish_connection().unwrap();
+        let list = List { raw: true, id: false, key: false, path: false, desc: false };
+        let expected = CommandResult::List("'key1[description]' 'key2[description2]'".to_string());
+        let result = list.show_bookmark_raw(&conn).unwrap();
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn show_bookmark_no_option() {
+        setup();
+        let conn = establish_connection().unwrap();
+        let list = List { raw: false, id: false, key: false, path: false, desc: false };
+        let expected = "Displaying 2 directories\n".to_string()
+            + " id | key  | path      | description \n"
+            + "----+------+-----------+--------------\n"
+            + " 1  | key1 | /example  | description \n"
+            + " 2  | key2 | /example2 | description2 \n";
+        let result = list.show_bookmark(&conn).unwrap();
+        assert_eq!(CommandResult::List(expected), result);
     }
 }

@@ -6,9 +6,10 @@ Confirm execution only with zsh on macos.
 $ make install  
 ```  
 Add the following to .zshrc.
-```  
-DATABASE_URL="${HOME}/bd.db"  
-eval "$(dirmarks init)"  
+```
+# Optional default DATABASE PATH
+DATABASE_URL="${HOME}/bd.db"
+eval "$(dirmarks init)"
 chpwd() {dirmarks history save}
 ```
 And run the following

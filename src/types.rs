@@ -33,10 +33,12 @@ pub enum CommandError {
     Other(#[from] anyhow::Error),
 }
 
-#[derive(Display)]
+#[derive(Debug, Display, PartialEq)]
 pub enum CommandResult {
     #[display(fmt = "")]
     DisplayNone,
+    #[display(fmt = "{}", _0)]
+    List(String),
     #[display(fmt = "{} : Added {} -> {}", "*SUCCESS_STRING", _0, _1)]
     Added(String, String),
     #[display(fmt = "{} : Deleted {} -> {}", "*SUCCESS_STRING", _0, _1)]
