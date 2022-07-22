@@ -75,7 +75,7 @@ impl List {
     fn show_bookmark(&self, conn: &SqliteConnection) -> CliResult {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
-        table.add_row(row![bFc => "id", "key", "path", "description"]);
+        table.set_titles(row![bFc => "id", "key", "path", "description"]);
         let results = self.get_bookmarks(conn)?;
         println!("Displaying {} directories", results.len());
         for bookmark in results {
