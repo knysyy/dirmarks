@@ -46,6 +46,8 @@ impl List {
             bookmark::get_bookmarks(conn, Order::Key, self.desc)
         } else if self.path {
             bookmark::get_bookmarks(conn, Order::Path, self.desc)
+        } else if self.id {
+            bookmark::get_bookmarks(conn, Order::Id, self.desc)
         } else {
             bookmark::get_bookmarks(conn, Order::Id, self.desc)
         }
