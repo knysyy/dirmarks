@@ -1,8 +1,7 @@
-use std::borrow::Borrow;
-
-use anyhow::{Context};
+use anyhow::Context;
 use diesel::SqliteConnection;
-use prettytable::{format, Table};
+use log::debug;
+use prettytable::{format, row, Table};
 use structopt::{clap, StructOpt};
 
 use crate::{
@@ -65,7 +64,7 @@ impl List {
                     bookmark
                         .description
                         .as_ref()
-                        .unwrap_or("no description".to_string().borrow())
+                        .unwrap_or(&String::from("no description"))
                 )
             })
             .collect::<Vec<_>>()

@@ -1,13 +1,7 @@
-#[macro_use]
-extern crate diesel;
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate prettytable;
-
 use std::env;
 
 use dotenv::dotenv;
+use log::debug;
 use structopt::StructOpt;
 
 use crate::commands::Opt;

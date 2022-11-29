@@ -1,5 +1,6 @@
 use std::io;
 
+use log::debug;
 use structopt::{
     clap::{self, Shell},
     StructOpt,

@@ -1,3 +1,4 @@
+use log::debug;
 use structopt::{clap, StructOpt};
 
 use crate::{
