@@ -34,25 +34,25 @@ pub struct List {
 impl List {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
-        let conn = establish_connection()?;
+        let conn = &mut establish_connection()?;
         if self.raw {
-            return Ok(self.show_bookmark_raw(&conn)?);
+            return Ok(self.show_bookmark_raw(conn)?);
         }
-        return Ok(self.show_bookmark(&conn)?);
+        return Ok(self.show_bookmark(conn)?);
     }
 
-    fn get_bookmarks(&self, conn: &SqliteConnection) -> anyhow::Result<Vec<Bookmark>> {
+    fn get_bookmarks(&self, conn: &mut SqliteConnection) -> anyhow::Result<Vec<Bookmark>> {
         if self.key {
-            bookmark::get_bookmarks(&conn, Order::Key, self.desc)
+            bookmark::get_bookmarks(conn, Order::Key, self.desc)
         } else if self.path {
-            bookmark::get_bookmarks(&conn, Order::Path, self.desc)
+            bookmark::get_bookmarks(conn, Order::Path, self.desc)
         } else {
-            bookmark::get_bookmarks(&conn, Order::Id, self.desc)
+            bookmark::get_bookmarks(conn, Order::Id, self.desc)
         }
         .context("ブックマークの取得に失敗しました。")
     }
 
-    fn show_bookmark_raw(&self, conn: &SqliteConnection) -> CliResult {
+    fn show_bookmark_raw(&self, conn: &mut SqliteConnection) -> CliResult {
         let results = self.get_bookmarks(conn)?;
         let keys = results
             .iter()
@@ -72,7 +72,7 @@ impl List {
         Ok(CommandResult::DisplayNone)
     }
 
-    fn show_bookmark(&self, conn: &SqliteConnection) -> CliResult {
+    fn show_bookmark(&self, conn: &mut SqliteConnection) -> CliResult {
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         table.add_row(row![bFc => "id", "key", "path", "description"]);

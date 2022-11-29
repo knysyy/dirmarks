@@ -17,8 +17,8 @@ pub struct Jump {
 impl Jump {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
-        let conn = establish_connection()?;
-        match bookmark::get_bookmark_by_key(&conn, &self.key) {
+        let conn = &mut establish_connection()?;
+        match bookmark::get_bookmark_by_key(conn, &self.key) {
             Ok(bookmark) => Ok(CommandResult::Jump(bookmark.path)),
             Err(diesel::NotFound) => Err(CommandError::KeyNotFoundError(self.key.clone())),
             Err(err) => Err(CommandError::DieselError(err)),

@@ -20,7 +20,7 @@ pub struct NewHistory<'a> {
     pub count: i32,
 }
 
-pub fn create_histories_table(conn: &SqliteConnection) -> Result<(), diesel::result::Error> {
+pub fn create_histories_table(conn: &mut SqliteConnection) -> Result<(), diesel::result::Error> {
     // TODO load sql or diesel_migration
     sql_query(
         "CREATE TABLE histories (
@@ -36,7 +36,7 @@ pub fn create_histories_table(conn: &SqliteConnection) -> Result<(), diesel::res
 }
 
 pub fn create_histories(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     path: &str,
 ) -> Result<usize, diesel::result::Error> {
     let new_history = NewHistory { path, count: 1 };
@@ -46,20 +46,20 @@ pub fn create_histories(
 }
 
 pub fn get_history(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     input_path: &str,
 ) -> Result<History, diesel::result::Error> {
     use crate::schema::histories::dsl::*;
     histories.filter(path.eq(input_path)).first::<History>(conn)
 }
 
-pub fn get_histories(conn: &SqliteConnection) -> Result<Vec<History>, diesel::result::Error> {
+pub fn get_histories(conn: &mut SqliteConnection) -> Result<Vec<History>, diesel::result::Error> {
     use crate::schema::histories::dsl::*;
     histories.load::<History>(conn)
 }
 
 pub fn update_count(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     input_path: &str,
     input_count: i32,
 ) -> Result<usize, diesel::result::Error> {

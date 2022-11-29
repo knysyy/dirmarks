@@ -17,10 +17,10 @@ pub struct Delete {
 impl Delete {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
-        let conn = establish_connection()?;
-        match bookmark::get_bookmark_by_key(&conn, &self.key) {
+        let conn = &mut establish_connection()?;
+        match bookmark::get_bookmark_by_key(conn, &self.key) {
             Ok(bookmark) => {
-                bookmark::delete_bookmark(&conn, &self.key)?;
+                bookmark::delete_bookmark(conn, &self.key)?;
                 Ok(CommandResult::Deleted(bookmark.key, bookmark.path))
             },
             Err(diesel::NotFound) => Err(CommandError::KeyNotFoundError(self.key.clone())),

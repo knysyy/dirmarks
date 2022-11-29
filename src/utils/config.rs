@@ -10,17 +10,18 @@ pub struct Config {
 
 impl Config {
     pub fn from_env() -> Self {
-        let mut cfg = config::Config::new();
-        let result = cfg.merge(config::Environment::with_prefix("DM"));
-        if result.is_ok() {
-            let result = cfg.try_into();
+        let config = config::Config::builder()
+            .add_source(config::Environment::with_prefix("DM"))
+            .build();
+        if config.is_ok() {
+            let result = config.unwrap().try_deserialize();
             return match result {
                 Ok(config) => {
                     debug!("{:?}", config);
                     config
                 },
                 Err(err) => {
-                    debug!("{:?}", err);
+                    error!("{:?}", err);
                     Self::default()
                 },
             };

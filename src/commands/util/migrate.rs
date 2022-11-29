@@ -29,10 +29,10 @@ impl Migrate {
             }
         }
 
-        let conn = establish_connection()?;
+        let conn = &mut establish_connection()?;
 
-        bookmark::create_bookmarks_table(&conn)?;
-        history::create_histories_table(&conn)?;
+        bookmark::create_bookmarks_table(conn)?;
+        history::create_histories_table(conn)?;
 
         Ok(CommandResult::Migrated(CONFIG.database_url.clone()))
     }

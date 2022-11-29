@@ -25,7 +25,7 @@ pub enum Order {
     Path,
 }
 
-pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::result::Error> {
+pub fn create_bookmarks_table(conn: &mut SqliteConnection) -> Result<(), diesel::result::Error> {
     // TODO load sql or diesel_migration
     sql_query("CREATE TABLE IF NOT EXISTS bookmarks(id INTEGER PRIMARY KEY, key VARCHAR(10) NOT NULL, path VARCHAR(255) NOT NULL, description TEXT)")
         .execute(conn)?;
@@ -33,7 +33,7 @@ pub fn create_bookmarks_table(conn: &SqliteConnection) -> Result<(), diesel::res
 }
 
 pub fn get_bookmarks(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     order: Order,
     desc: bool,
 ) -> Result<Vec<Bookmark>, diesel::result::Error> {
@@ -56,7 +56,7 @@ pub fn get_bookmarks(
 }
 
 pub fn get_bookmark_by_key(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     input_key: &str,
 ) -> Result<Bookmark, diesel::result::Error> {
     use crate::schema::bookmarks::dsl::*;
@@ -64,7 +64,7 @@ pub fn get_bookmark_by_key(
 }
 
 pub fn get_bookmark_by_path(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     input_path: &str,
 ) -> Result<Bookmark, diesel::result::Error> {
     use crate::schema::bookmarks::dsl::*;
@@ -72,7 +72,7 @@ pub fn get_bookmark_by_path(
 }
 
 pub fn create_bookmark<'a>(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     key: &'a str,
     path: &'a str,
     description: Option<&'a str>,
@@ -89,7 +89,7 @@ pub fn create_bookmark<'a>(
 }
 
 pub fn delete_bookmark(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     input_key: &str,
 ) -> Result<usize, diesel::result::Error> {
     use crate::schema::bookmarks::dsl::*;
@@ -97,7 +97,7 @@ pub fn delete_bookmark(
 }
 
 pub fn rename_bookmark(
-    conn: &SqliteConnection,
+    conn: &mut SqliteConnection,
     old_key: &str,
     new_key: &str,
 ) -> Result<usize, diesel::result::Error> {

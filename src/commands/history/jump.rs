@@ -17,8 +17,8 @@ pub struct HistoryJump {}
 impl HistoryJump {
     pub fn run(&self) -> CliResult {
         debug!("{:?}", self);
-        let conn = establish_connection()?;
-        let histories = history::get_histories(&conn)?;
+        let conn = &mut establish_connection()?;
+        let histories = history::get_histories(conn)?;
         let mut fzf = Fzf::new()?;
         let handle = fzf.stdin();
         for history in &histories {
