@@ -21,3 +21,4 @@ serde = { version = "1.0.123", features = ["derive"] }
 config = "0.13.2"
 smart-default = "0.6.0"
 chrono = "0.4.19"
+enum_dispatch = "0.3.8"

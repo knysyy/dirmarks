@@ -2,6 +2,7 @@ use log::debug;
 use structopt::{clap, StructOpt};
 
 use crate::{
+    commands::Command,
     models::bookmark,
     types::{CliResult, CommandError, CommandResult},
     utils::database::establish_connection,
@@ -15,8 +16,8 @@ pub struct Delete {
     key: String,
 }
 
-impl Delete {
-    pub fn run(&self) -> CliResult {
+impl Command for Delete {
+    fn execute(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = &mut establish_connection()?;
         match bookmark::get_bookmark_by_key(conn, &self.key) {

@@ -23,7 +23,7 @@ impl HistorySave {
         let path = current_dir
             .to_str()
             .context("Failed to convert current directory to path.")?;
-        match history::get_history(conn, &path) {
+        match history::get_history(conn, path) {
             Ok(history) => {
                 history::update_count(conn, &history.path, history.count + 1)?;
             },

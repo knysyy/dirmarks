@@ -3,15 +3,18 @@ use std::{io, io::Write};
 use log::debug;
 use structopt::{clap, StructOpt};
 
-use crate::types::{CliResult, CommandResult};
+use crate::{
+    commands::Command,
+    types::{CliResult, CommandResult},
+};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "init", about = "bookmark directory init commands")]
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub struct Init {}
 
-impl Init {
-    pub fn run(&self) -> CliResult {
+impl Command for Init {
+    fn execute(&self) -> CliResult {
         debug!("{:?}", self);
         let stdout = io::stdout();
         let mut handle = stdout.lock();

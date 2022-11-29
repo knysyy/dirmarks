@@ -5,6 +5,7 @@ use prettytable::{format, row, Table};
 use structopt::{clap, StructOpt};
 
 use crate::{
+    commands::Command,
     models::bookmark::{self, Bookmark, Order},
     types::{CliResult, CommandResult},
     utils::database::establish_connection,
@@ -17,38 +18,36 @@ pub struct List {
     #[structopt(short, long)]
     raw: bool,
 
-    #[structopt(short, long, conflicts_with_all(&["key", "path"]))]
-    id: bool,
-
-    #[structopt(short, long, conflicts_with_all(&["id", "path"]))]
+    #[structopt(short, long, conflicts_with_all(&["path"]))]
     key: bool,
 
-    #[structopt(short, long, conflicts_with_all(&["id", "key"]))]
+    #[structopt(short, long, conflicts_with_all(&["key"]))]
     path: bool,
 
     #[structopt(short, long)]
     desc: bool,
 }
 
-impl List {
-    pub fn run(&self) -> CliResult {
+impl Command for List {
+    fn execute(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = &mut establish_connection()?;
         if self.raw {
-            return Ok(self.show_bookmark_raw(conn)?);
+            self.show_bookmark_raw(conn)
+        } else {
+            self.show_bookmark(conn)
         }
-        return Ok(self.show_bookmark(conn)?);
     }
+}
 
+impl List {
     fn get_bookmarks(&self, conn: &mut SqliteConnection) -> anyhow::Result<Vec<Bookmark>> {
         if self.key {
             bookmark::get_bookmarks(conn, Order::Key, self.desc)
         } else if self.path {
             bookmark::get_bookmarks(conn, Order::Path, self.desc)
-        } else if self.id {
-            bookmark::get_bookmarks(conn, Order::Id, self.desc)
         } else {
-            Ok(Vec::new())
+            bookmark::get_bookmarks(conn, Order::Id, self.desc)
         }
         .context("ブックマークの取得に失敗しました。")
     }

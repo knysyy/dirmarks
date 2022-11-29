@@ -2,6 +2,7 @@ use log::debug;
 use structopt::{clap, StructOpt};
 
 use crate::{
+    commands::Command,
     models::bookmark,
     types::{CliResult, CommandError, CommandResult},
     utils::database::establish_connection,
@@ -18,8 +19,8 @@ pub struct Rename {
     new_key: String,
 }
 
-impl Rename {
-    pub fn run(&self) -> CliResult {
+impl Command for Rename {
+    fn execute(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = &mut establish_connection()?;
         match bookmark::get_bookmark_by_key(conn, &self.new_key) {

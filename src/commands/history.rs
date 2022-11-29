@@ -1,6 +1,6 @@
 use structopt::{clap, StructOpt};
 
-use crate::types::CliResult;
+use crate::{commands::Command, types::CliResult};
 
 mod jump;
 mod save;
@@ -13,8 +13,8 @@ pub enum History {
     Jump(jump::HistoryJump),
 }
 
-impl History {
-    pub fn run(&self) -> CliResult {
+impl Command for History {
+    fn execute(&self) -> CliResult {
         match self {
             History::Save(history_save) => history_save.run(),
             History::Jump(history_add) => history_add.run(),

@@ -14,8 +14,8 @@ impl Config {
         let config = config::Config::builder()
             .add_source(config::Environment::with_prefix("DM"))
             .build();
-        if config.is_ok() {
-            let result = config.unwrap().try_deserialize();
+        if let Ok(config) = config {
+            let result = config.try_deserialize();
             return match result {
                 Ok(config) => {
                     debug!("{:?}", config);
@@ -31,4 +31,4 @@ impl Config {
     }
 }
 
-pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::from_env());
+pub static CONFIG: Lazy<Config> = Lazy::new(Config::from_env);

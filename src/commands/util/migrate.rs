@@ -3,6 +3,7 @@ use std::{fs::File, io, path::PathBuf};
 use structopt::{clap, StructOpt};
 
 use crate::{
+    commands::Command,
     models::{bookmark, history},
     types::{CliResult, CommandError, CommandResult},
     utils::{config::CONFIG, database::establish_connection},
@@ -13,8 +14,8 @@ use crate::{
 #[structopt(setting(clap::AppSettings::ColoredHelp))]
 pub struct Migrate {}
 
-impl Migrate {
-    pub fn run(&self) -> CliResult {
+impl Command for Migrate {
+    fn execute(&self) -> CliResult {
         let path = PathBuf::from(&CONFIG.database_url);
 
         if !path.exists() {

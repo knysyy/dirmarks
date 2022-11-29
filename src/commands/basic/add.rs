@@ -5,6 +5,7 @@ use log::debug;
 use structopt::{clap, StructOpt};
 
 use crate::{
+    commands::Command,
     models::bookmark,
     types::{CliResult, CommandError, CommandResult},
     utils::database::establish_connection,
@@ -24,8 +25,8 @@ pub struct Add {
     description: Option<String>,
 }
 
-impl Add {
-    pub fn run(&self) -> CliResult {
+impl Command for Add {
+    fn execute(&self) -> CliResult {
         debug!("{:?}", self);
         let conn = &mut establish_connection()?;
         let current_dir = env::current_dir()?;
@@ -35,10 +36,10 @@ impl Add {
         };
         match bookmark::get_bookmark_by_key(conn, &self.key) {
             Ok(_) => Err(CommandError::KeyAlreadyExistError(self.key.clone())),
-            Err(diesel::NotFound) => match bookmark::get_bookmark_by_path(conn, &path) {
+            Err(diesel::NotFound) => match bookmark::get_bookmark_by_path(conn, path) {
                 Ok(_) => Err(CommandError::PathAlreadyExistError(path.to_string())),
                 Err(diesel::NotFound) => {
-                    bookmark::create_bookmark(conn, &self.key, &path, self.description.as_deref())?;
+                    bookmark::create_bookmark(conn, &self.key, path, self.description.as_deref())?;
                     Ok(CommandResult::Added(self.key.to_string(), path.to_string()))
                 },
                 Err(err) => Err(CommandError::DieselError(err)),

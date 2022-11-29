@@ -2,13 +2,20 @@ mod basic;
 mod history;
 mod util;
 
+use enum_dispatch::enum_dispatch;
 use structopt::{clap, StructOpt};
 
 use crate::{
     constants::ERROR_STRING,
-    types::{CommandError, CommandResult},
+    types::{CliResult, CommandResult},
 };
 
+#[enum_dispatch(Opt)]
+pub trait Command {
+    fn execute(&self) -> CliResult;
+}
+
+#[enum_dispatch]
 #[derive(Debug, StructOpt)]
 #[structopt(name = "dirmarks")]
 #[structopt(long_version(option_env ! ("LONG_VERSION").unwrap_or(env ! ("CARGO_PKG_VERSION"))))]
@@ -27,21 +34,7 @@ pub enum Opt {
 
 impl Opt {
     pub fn run(&self) {
-        let result = match self {
-            Opt::Init(init) => init.run(),
-            Opt::Add(add) => add.run(),
-            Opt::Jump(jump) => jump.run(),
-            Opt::List(list) => list.run(),
-            Opt::Delete(delete) => delete.run(),
-            Opt::Rename(rename) => rename.run(),
-            Opt::Migrate(migrate) => migrate.run(),
-            Opt::History(history) => history.run(),
-            Opt::Completion(completion) => completion.run(),
-        };
-        self.print_result(result);
-    }
-
-    pub fn print_result(&self, result: Result<CommandResult, CommandError>) {
+        let result: CliResult = self.execute();
         match result {
             Ok(command_result) => match command_result {
                 CommandResult::DisplayNone => {},

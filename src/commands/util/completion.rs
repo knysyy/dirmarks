@@ -7,7 +7,7 @@ use structopt::{
 };
 
 use crate::{
-    commands::Opt,
+    commands::{Command, Opt},
     types::{CliResult, CommandResult},
 };
 
@@ -27,8 +27,8 @@ enum ShellOpt {
     Bash,
 }
 
-impl Completion {
-    pub fn run(&self) -> CliResult {
+impl Command for Completion {
+    fn execute(&self) -> CliResult {
         debug!("{:?}", self);
         match self.shell {
             ShellOpt::Zsh => {
@@ -40,7 +40,9 @@ impl Completion {
         }
         Ok(CommandResult::DisplayNone)
     }
+}
 
+impl Completion {
     fn completion(shell: Shell) {
         Opt::clap().gen_completions_to(env!("CARGO_PKG_NAME"), shell, &mut io::stdout())
     }
