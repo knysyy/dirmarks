@@ -12,7 +12,7 @@ pub struct Bookmark {
 }
 
 #[derive(Insertable)]
-#[table_name = "bookmarks"]
+#[diesel(table_name = bookmarks)]
 pub struct NewBookmark<'a> {
     pub key: &'a str,
     pub path: &'a str,

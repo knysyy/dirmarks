@@ -14,7 +14,7 @@ pub struct History {
 }
 
 #[derive(Insertable)]
-#[table_name = "histories"]
+#[diesel(table_name = histories)]
 pub struct NewHistory<'a> {
     pub path: &'a str,
     pub count: i32,

@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 
-use anyhow::Context;
+use anyhow::{Context};
 use diesel::SqliteConnection;
 use prettytable::{format, Table};
 use structopt::{clap, StructOpt};
@@ -46,8 +46,10 @@ impl List {
             bookmark::get_bookmarks(conn, Order::Key, self.desc)
         } else if self.path {
             bookmark::get_bookmarks(conn, Order::Path, self.desc)
-        } else {
+        } else if self.id {
             bookmark::get_bookmarks(conn, Order::Id, self.desc)
+        } else {
+            Ok(Vec::new())
         }
         .context("ブックマークの取得に失敗しました。")
     }
