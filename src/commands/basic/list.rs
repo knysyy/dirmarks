@@ -73,22 +73,17 @@ impl List {
     }
 
     fn show_bookmark(&self, conn: &mut SqliteConnection) -> CliResult {
+        let results = self.get_bookmarks(conn)?;
+        println!("Displaying {} directories", results.len());
+
         let mut table = Table::new();
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         table.add_row(row![bFc => "id", "key", "path", "description"]);
-        let results = self.get_bookmarks(conn)?;
-        println!("Displaying {} directories", results.len());
         for bookmark in results {
-            match bookmark.description {
-                Some(value) => {
-                    table.add_row(row![bookmark.id, bookmark.key, bookmark.path, value]);
-                },
-                None => {
-                    table.add_row(row![bookmark.id, bookmark.key, bookmark.path, Fr -> "None"]);
-                },
-            }
+            table.add_row(row![bookmark.id, bookmark.key, bookmark.path, bookmark.description.unwrap_or_else(|| "None".to_string())]);
         }
         table.printstd();
+
         Ok(CommandResult::DisplayNone)
     }
 }
