@@ -47,6 +47,8 @@ pub enum CommandResult {
     Jump(String),
     #[display(fmt = "{} : Migrated {}", "*SUCCESS_STRING", _0)]
     Migrated(String),
+    #[display(fmt = "jump : {}", _0)]
+    Select(String),
 }
 
 pub type CliResult = Result<CommandResult, CommandError>;

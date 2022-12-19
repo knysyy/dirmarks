@@ -30,6 +30,24 @@ _dirmarks_cd() {
     cd "$@" || return "$?"
 }
 
+_dirmarks_jump() {
+  if [ -p /dev/stdin ]; then
+    result="$(cat /dev/stdin)"
+  else
+    result=$@
+  fi
+  case "$result" in
+    "jump : "*)
+        _dirmarks_cd "${result:7}" || return "$?"
+        ;;
+    *)
+        if [ -n "$result" ]; then
+            echo "$result"
+        fi
+        ;;
+  esac
+}
+
 bj() {
     if [ "$#" -eq 0 ]; then
         _dirmarks_cd ~ || return "$?"
@@ -37,31 +55,16 @@ bj() {
         _dirmarks_cd ~- || return "$?"
     else
         result="$(dirmarks jump $@)" || return "$?"
-        case "$result" in
-            "jump : "*)
-                _dirmarks_cd "${result:7}" || return "$?"
-                ;;
-            *)
-                if [ -n "$result" ]; then
-                    echo "$result"
-                fi
-                ;;
-        esac
+        _dirmarks_jump $result
     fi
 }
 
+bs() {
+    dirmarks select $@ | _dirmarks_jump
+}
+
 bh() {
-    result="$(dirmarks history jump $@)" || return "$?"
-    case "$result" in
-        "jump : "*)
-            _dirmarks_cd "${result:7}" || return "$?"
-            ;;
-        *)
-            if [ -n "$result" ]; then
-                echo "$result"
-            fi
-            ;;
-    esac
+    dirmarks history jump $@ | _dirmarks_jump
 }
 "#;
 

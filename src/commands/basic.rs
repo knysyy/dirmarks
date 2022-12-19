@@ -3,3 +3,4 @@ pub mod delete;
 pub mod jump;
 pub mod list;
 pub mod rename;
+pub mod select;

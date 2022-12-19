@@ -30,6 +30,7 @@ pub enum Opt {
     Delete(basic::delete::Delete),
     Rename(basic::rename::Rename),
     History(history::History),
+    Select(basic::select::Select),
 }
 
 impl Opt {

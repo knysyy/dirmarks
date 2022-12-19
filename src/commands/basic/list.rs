@@ -80,7 +80,12 @@ impl List {
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         table.add_row(row![bFc => "id", "key", "path", "description"]);
         for bookmark in results {
-            table.add_row(row![bookmark.id, bookmark.key, bookmark.path, bookmark.description.unwrap_or_else(|| "None".to_string())]);
+            table.add_row(row![
+                bookmark.id,
+                bookmark.key,
+                bookmark.path,
+                bookmark.description.unwrap_or_else(|| "None".to_string())
+            ]);
         }
         table.printstd();
 
