@@ -31,6 +31,7 @@ pub enum Opt {
     Rename(basic::rename::Rename),
     History(history::History),
     Select(basic::select::Select),
+    Check(basic::check::Check),
 }
 
 impl Opt {
